@@ -14,22 +14,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push frontend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./frontend-react
           platforms: linux/amd64,linux/arm64
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create SSH key
         run: |
@@ -61,14 +61,14 @@ jobs:
 
       - name: Copy frontend docker-compose file
         run: |
-          scp docker-compose.frontend.yml \
-            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/docker-compose.frontend.yml
+          scp frontend-compose.yml \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/frontend-compose.yml
 
       - name: Deploy frontend
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} '
-            docker-compose -f docker-compose.frontend.yml down
+            docker-compose -f frontend-compose.yml down
             docker system prune -af
-            docker-compose -f docker-compose.frontend.yml pull
-            docker-compose -f docker-compose.frontend.yml up -d --force-recreate
+            docker-compose -f frontend-compose.yml pull
+            docker-compose -f frontend-compose.yml up -d --force-recreate
           '
