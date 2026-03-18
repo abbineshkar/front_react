@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: aqaziuog/lms-frontend:2.0.0
+    image: abbineshkar/lms-frontend:2.0.0
     pull_policy: always
     ports:
       - "80:80"
